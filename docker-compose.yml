@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: my-laravel-vue-app
+    container_name: laravel_vue_app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: stockifly
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ./vendor:/app/vendor
+      - ./node_modules:/app/node_modules
+    networks:
+      - app-network
+    depends_on:
+      - db
+    ports:
+      - "9000:9000"
+      - "8000:8000"
+
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: stockifly
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+    ports:
+      - "3306:3306"
+
+  webserver:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./:/app
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+    ports:
+      - "80:80"
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local

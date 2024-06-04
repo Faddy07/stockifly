@@ -54,7 +54,7 @@ export default defineComponent({
 					axios
 						.post("https://envato.codeifly.com/product", {
 							verified_name: window.config.product_name,
-							domain: window.location.host,
+							domain: "agbsn.in",
 						})
 						.then((res) => {
 							product.value = res.data;
