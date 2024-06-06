@@ -1,6 +1,6 @@
 # Dockerfile
 # Use base image for container
-FROM richarvey/nginx-php-fpm:3.1.6
+FROM richarvey/nginx-php-fpm:latest
 
 # Copy all application code into your Docker container
 COPY . .
@@ -14,6 +14,6 @@ RUN apk add --no-cache npm
 RUN npm install
 
 # Build Vite assets
-RUN composer install
+RUN npm run build
 
 CMD ["/start.sh"]
