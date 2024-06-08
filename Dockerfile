@@ -26,5 +26,14 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Ensure Composer uses the correct PHP version and install dependencies
 RUN composer install --ignore-platform-reqs 
 
+RUN echo "Caching config..."
+RUN php artisan config:cache
+
+RUN echo "Caching routes..."
+RUN php artisan route:cache
+
+RUN echo "Running migrations..."
+RUN php artisan migrate --force
+
 # Command to run the application
 CMD ["/start.sh"]
