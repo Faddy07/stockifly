@@ -7,6 +7,21 @@ WORKDIR /var/www/html
 # Copy all application code into your Docker container
 COPY . .
 
+# Image config
+ENV SKIP_COMPOSER 1
+ENV WEBROOT /var/www/html/public
+ENV PHP_ERRORS_STDERR 1
+ENV RUN_SCRIPTS 1
+ENV REAL_IP_HEADER 1
+
+# Laravel config
+ENV APP_ENV production
+ENV APP_DEBUG false
+ENV LOG_CHANNEL stderr
+
+# Allow composer to run as root
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
 # Update apk package manager and install necessary packages
 RUN apk update && \
     apk add --no-cache npm php-bcmath
@@ -26,9 +41,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Ensure Composer uses the correct PHP version and install dependencies
 RUN composer install --ignore-platform-reqs 
 
-
-RUN echo "Running migrations..."
-RUN php artisan migrate --force
 
 # Command to run the application
 CMD ["/start.sh"]
