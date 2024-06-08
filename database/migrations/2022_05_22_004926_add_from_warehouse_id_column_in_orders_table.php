@@ -19,7 +19,19 @@ class AddFromWarehouseIdColumnInOrdersTable extends Migration
             $table->foreign('from_warehouse_id')->references('id')->on('warehouses')->onDelete('cascade')->onUpdate('cascade');
         });
 
-        DB::statement("ALTER TABLE `order_items` CHANGE COLUMN `user_id` `user_id` BIGINT UNSIGNED NULL DEFAULT NULL  COMMENT '' AFTER `id`;");
+        // DB::statement("ALTER TABLE `order_items` CHANGE COLUMN `user_id` `user_id` BIGINT UNSIGNED NULL DEFAULT NULL  COMMENT '' AFTER `id`;");
+
+        // Altering the user_id column in order_items table for PostgreSQL
+        DB::statement("
+        ALTER TABLE order_items
+        ALTER COLUMN user_id SET DATA TYPE BIGINT,
+        ALTER COLUMN user_id DROP NOT NULL,
+        ALTER COLUMN user_id SET DEFAULT NULL;
+    ");
+    
+        // Adding the comment
+        DB::statement("COMMENT ON COLUMN order_items.user_id IS '';");
+
 
 
         if (app_type() == 'non-saas') {

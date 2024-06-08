@@ -14,7 +14,11 @@ class AddCreatedByColumnInUsersTable extends Migration
      */
     public function up()
     {
-        DB::statement("ALTER TABLE `users` CHANGE COLUMN `email` `email` VARCHAR(191) NULL DEFAULT NULL;");
+        // DB::statement("ALTER TABLE `users` CHANGE COLUMN `email` `email` VARCHAR(191) NULL DEFAULT NULL;");
+
+        // Adjusting email column to be nullable in PostgreSQL
+        DB::statement("ALTER TABLE users ALTER COLUMN email DROP NOT NULL;");
+        DB::statement("ALTER TABLE users ALTER COLUMN email SET DEFAULT NULL;");
 
         Schema::table('users', function (Blueprint $table) {
             // $table->string('email')->nullable()->default(null)->change();
